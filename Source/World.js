@@ -1,16 +1,18 @@
 
-function World(blockDefns, level)
+class World
 {
-	this.blockDefns = blockDefns;
-	this.level = level;
-}
-{
-	World.prototype.initialize = function()
+	constructor(blockDefns, level)
+	{
+		this.blockDefns = blockDefns;
+		this.level = level;
+	}
+
+	initialize()
 	{
 		this.level.initialize();
 	}
 
-	World.prototype.updateForTimerTick = function()
+	updateForTimerTick()
 	{
 		if (this.level != null)
 		{

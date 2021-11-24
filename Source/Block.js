@@ -1,27 +1,26 @@
 
 // classes
 
-function Block(defn, posInCells)
+class Block
 {
-	this.defn = defn;
-	this.posInCells = posInCells;
-	this.orientation = new Coords(1, 0);
+	constructor(defn, posInCells)
+	{
+		this.defn = defn;
+		this.posInCells = posInCells;
+		this.orientation = new Coords(1, 0);
 
-	this.cellPositionsOccupied = 
-	[
-		new Coords(0, 0),
-		new Coords(0, 0),
-		new Coords(0, 0),
-		new Coords(0, 0),
-	];
+		this.cellPositionsOccupied = 
+		[
+			new Coords(0, 0),
+			new Coords(0, 0),
+			new Coords(0, 0),
+			new Coords(0, 0),
+		];
 
-	this.cellPositionsOccupiedUpdate();
-}
+		this.cellPositionsOccupiedUpdate();
+	}
 
-{
-	// instance methods
-
-	Block.prototype.cellPositionsOccupiedUpdate = function()
+	cellPositionsOccupiedUpdate()
 	{
 		var defn = this.defn;
 
@@ -44,7 +43,7 @@ function Block(defn, posInCells)
 		
 	}
 
-	Block.prototype.copyCellsOccupiedToMap = function(map)
+	copyCellsOccupiedToMap(map)
 	{
 		var returnValue = false;
 
@@ -56,7 +55,7 @@ function Block(defn, posInCells)
 		}
 	}
 
-	Block.prototype.collidesWithMapBottom = function(map)
+	collidesWithMapBottom(map)
 	{
 		var returnValue = false;
 
@@ -74,7 +73,7 @@ function Block(defn, posInCells)
 		return returnValue;	
 	}
 
-	Block.prototype.collidesWithMapCellsOccupied = function(map)
+	collidesWithMapCellsOccupied(map)
 	{
 		var returnValue = false;
 
@@ -97,7 +96,7 @@ function Block(defn, posInCells)
 		return returnValue;	
 	}
 
-	Block.prototype.collidesWithMapSides = function(map)
+	collidesWithMapSides(map)
 	{
 		var returnValue = false;
 
@@ -115,7 +114,7 @@ function Block(defn, posInCells)
 		return returnValue;	
 	}
 
-	Block.prototype.collidesWithMapTop = function(map)
+	collidesWithMapTop(map)
 	{
 		var returnValue = false;
 
@@ -127,7 +126,7 @@ function Block(defn, posInCells)
 			{
 				returnValue = true;
 				break;
-			}	
+			}
 		}
 
 		return returnValue;	

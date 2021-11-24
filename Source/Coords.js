@@ -1,12 +1,13 @@
 
-function Coords(x, y)
+class Coords
 {
-	this.x = x;
-	this.y = y;
-}
+	constructor(x, y)
+	{
+		this.x = x;
+		this.y = y;
+	}
 
-{
-	Coords.prototype.add = function(other)
+	add(other)
 	{
 		this.x += other.x;
 		this.y += other.y;
@@ -14,7 +15,7 @@ function Coords(x, y)
 		return this;
 	}
 
-	Coords.prototype.addXY = function(x, y)
+	addXY(x, y)
 	{
 		this.x += x;
 		this.y += y;
@@ -22,12 +23,12 @@ function Coords(x, y)
 		return this;
 	}
 
-	Coords.prototype.clone = function()
+	clone()
 	{
 		return new Coords(this.x, this.y);
 	}
 
-	Coords.prototype.divide = function(other)
+	divide(other)
 	{
 		this.x /= other.x;
 		this.y /= other.y;
@@ -35,12 +36,12 @@ function Coords(x, y)
 		return this;
 	}
 
-	Coords.prototype.dotProduct = function(other)
+	dotProduct(other)
 	{
 		return this.x * other.x + this.y * other.y;
 	}
 
-	Coords.prototype.isWithinRangeX = function(rangeMax)
+	isWithinRangeX(rangeMax)
 	{
 		var returnValue = 
 		(
@@ -50,7 +51,7 @@ function Coords(x, y)
 		return returnValue;
 	}
 
-	Coords.prototype.multiply = function(other)
+	multiply(other)
 	{
 		this.x *= other.x;
 		this.y *= other.y;
@@ -58,7 +59,7 @@ function Coords(x, y)
 		return this;
 	}
 
-	Coords.prototype.orient = function(forward)
+	orient(forward)
 	{
 		this.overwriteWithXY
 		(
@@ -69,7 +70,7 @@ function Coords(x, y)
 		return this;
 	}
 
-	Coords.prototype.overwriteWith = function(other)
+	overwriteWith(other)
 	{
 		this.x = other.x;
 		this.y = other.y;
@@ -77,7 +78,7 @@ function Coords(x, y)
 		return this;
 	}
 
-	Coords.prototype.overwriteWithXY = function(x, y)
+	overwriteWithXY(x, y)
 	{
 		this.x = x;
 		this.y = y;
@@ -85,16 +86,16 @@ function Coords(x, y)
 		return this;
 	}
 
-	Coords.prototype.right = function()
+	right()
 	{
 		var temp = this.x;
 		this.x = 0 - this.y;
 		this.y = temp;
 	
-		return this;	
+		return this;
 	}
 
-	Coords.prototype.subtract = function(other)
+	subtract(other)
 	{
 		this.x -= other.x;
 		this.y -= other.y;

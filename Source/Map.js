@@ -1,31 +1,30 @@
 
-function Map(sizeInCells)
+class Map
 {
-	this.sizeInCells = sizeInCells;
-	this.sizeInCellsMinusOnes = this.sizeInCells.clone().subtract
-	(
-		new Coords(1, 1)
-	);
-
-	this.cellsAsStrings = [];
-
-	this.cellRowBlankAsString = "";
-
-	for (var x = 0; x < this.sizeInCells.x; x++)
+	constructor(sizeInCells)
 	{
-		this.cellRowBlankAsString += ".";
+		this.sizeInCells = sizeInCells;
+		this.sizeInCellsMinusOnes = this.sizeInCells.clone().subtract
+		(
+			new Coords(1, 1)
+		);
+
+		this.cellsAsStrings = [];
+
+		this.cellRowBlankAsString = "";
+
+		for (var x = 0; x < this.sizeInCells.x; x++)
+		{
+			this.cellRowBlankAsString += ".";
+		}
+
+		for (var y = 0; y < this.sizeInCells.y; y++)
+		{
+			this.cellsAsStrings.push(this.cellRowBlankAsString);
+		}
 	}
 
-	for (var y = 0; y < this.sizeInCells.y; y++)
-	{
-		this.cellsAsStrings.push(this.cellRowBlankAsString);
-	}
-
-
-}
-
-{
-	Map.prototype.isCellAtPosOccupied = function(cellPos)
+	isCellAtPosOccupied(cellPos)
 	{
 		var returnValue = false;
 
@@ -43,7 +42,7 @@ function Map(sizeInCells)
 		return returnValue;
 	}
 
-	Map.prototype.setCellAtPosAsOccupied = function(cellPos)
+	setCellAtPosAsOccupied(cellPos)
 	{
 		var cellRowAsString = this.cellsAsStrings[cellPos.y];
 

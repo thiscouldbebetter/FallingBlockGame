@@ -1,11 +1,7 @@
 
-function DisplayHelper()
+class DisplayHelper
 {
-	// do nothing
-}
-
-{
-	DisplayHelper.prototype.drawBackground = function()
+	drawBackground()
 	{
 		this.graphics.fillStyle = "White";
 		this.graphics.strokeStyle = "Gray";
@@ -24,7 +20,7 @@ function DisplayHelper()
 
 	}
 
-	DisplayHelper.prototype.drawBlock = function(block)
+	drawBlock(block)
 	{
 		var cellPositionsOccupied = block.cellPositionsOccupied;
 
@@ -32,11 +28,11 @@ function DisplayHelper()
 		{
 			var cellPos = cellPositionsOccupied[i];
 
-			this.drawMapCellAtPos(cellPos);						
+			this.drawMapCellAtPos(cellPos);
 		}
 	}
 
-	DisplayHelper.prototype.drawMap = function(map)
+	drawMap(map)
 	{
 		for (var y = 0; y < map.sizeInCells.y; y++)
 		{
@@ -59,7 +55,7 @@ function DisplayHelper()
 		}
 	}
 
-	DisplayHelper.prototype.drawMapCellAtPos = function(cellPos)
+	drawMapCellAtPos(cellPos)
 	{
 		this.graphics.fillStyle = "LightGray";
 		this.graphics.strokeStyle = "Gray";
@@ -89,7 +85,16 @@ function DisplayHelper()
 		);
 	}
 
-	DisplayHelper.prototype.initialize = function(viewSizeInPixels, mapCellSizeInPixels)
+	drawText(textToDraw, fontHeightInPixels, drawPos)
+	{
+		this.graphics.font = fontHeightInPixels + "px sans-serif";
+		this.graphics.fillText
+		(
+			textToDraw, drawPos.x, drawPos.y + fontHeightInPixels
+		);
+	}
+
+	initialize(viewSizeInPixels, mapCellSizeInPixels)
 	{
 		this.viewSizeInPixels = viewSizeInPixels;
 		this.mapCellSizeInPixels = mapCellSizeInPixels;

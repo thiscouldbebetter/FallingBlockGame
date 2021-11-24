@@ -1,10 +1,9 @@
 
-function Globals()
-{}
+class Globals
 {
-	Globals.Instance = new Globals();
+	static Instance = new Globals();
 
-	Globals.prototype.initialize = function
+	initialize
 	(
 		millisecondsPerTimerTick, 
 		viewSizeInPixels,
@@ -34,7 +33,7 @@ function Globals()
 		)
 	}
 
-	Globals.prototype.handleEventTimerTick = function()
+	handleEventTimerTick()
 	{
 		this.inputHelper.updateForTimerTick();
 		this.world.updateForTimerTick();

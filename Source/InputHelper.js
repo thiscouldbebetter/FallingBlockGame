@@ -1,10 +1,9 @@
 
-function InputHelper()
-{}
+class InputHelper
 {
-	InputHelper.prototype.handleEventKeyDown = function(event)
+	handleEventKeyDown(event)
 	{
-		if (this.hasActionBeenPerformedThisTick == true)
+		if (this.hasActionBeenPerformedThisTick)
 		{
 			return;
 		}
@@ -21,9 +20,9 @@ function InputHelper()
 			var blockPosPrev = blockPosInCells.clone();
 			var blockOrientationPrev = blockCurrent.orientation.clone();
 
-			var keyCode = event.keyCode;
-	
-			if (keyCode == 65) // a - left
+			var key = event.key;
+
+			if (key == "ArrowLeft")
 			{
 				blockPosInCells.addXY
 				(
@@ -34,14 +33,14 @@ function InputHelper()
 
 				if 
 				(
-					blockCurrent.collidesWithMapSides(map) == true
-					|| blockCurrent.collidesWithMapCellsOccupied(map) == true
+					blockCurrent.collidesWithMapSides(map)
+					|| blockCurrent.collidesWithMapCellsOccupied(map)
 				)
 				{
-					blockPosInCells.overwriteWith(blockPosPrev);	
+					blockPosInCells.overwriteWith(blockPosPrev);
 				}
 			}
-			else if (keyCode == 68) // d - right
+			else if (key == "ArrowRight")
 			{
 				blockPosInCells.addXY
 				(
@@ -52,14 +51,14 @@ function InputHelper()
 
 				if 
 				(
-					blockCurrent.collidesWithMapSides(map) == true
-					|| blockCurrent.collidesWithMapCellsOccupied(map) == true
+					blockCurrent.collidesWithMapSides(map)
+					|| blockCurrent.collidesWithMapCellsOccupied(map)
 				)
 				{
-					blockPosInCells.overwriteWith(blockPosPrev);	
+					blockPosInCells.overwriteWith(blockPosPrev);
 				}
 			}
-			else if (keyCode == 83) // s - down
+			else if (key == "ArrowDown")
 			{
 				blockPosInCells.addXY
 				(
@@ -70,14 +69,14 @@ function InputHelper()
 
 				if 
 				(
-					blockCurrent.collidesWithMapBottom(map) == true
-					|| blockCurrent.collidesWithMapCellsOccupied(map) == true
+					blockCurrent.collidesWithMapBottom(map)
+					|| blockCurrent.collidesWithMapCellsOccupied(map)
 				)
 				{
-					blockPosInCells.overwriteWith(blockPosPrev);	
+					blockPosInCells.overwriteWith(blockPosPrev);
 				}
 			}
-			else if (keyCode == 87) // w - rotate
+			else if (key == "ArrowUp")
 			{
 				blockCurrent.orientation.right();
 
@@ -85,15 +84,15 @@ function InputHelper()
 
 				if 
 				(
-					blockCurrent.collidesWithMapBottom(map) == true
-					|| blockCurrent.collidesWithMapSides(map) == true
-					|| blockCurrent.collidesWithMapCellsOccupied(map) == true
+					blockCurrent.collidesWithMapBottom(map)
+					|| blockCurrent.collidesWithMapSides(map)
+					|| blockCurrent.collidesWithMapCellsOccupied(map)
 				)
 				{
 					blockCurrent.orientation.overwriteWith
 					(
 						blockOrientationPrev
-					);	
+					);
 				}
 			}
 			else
@@ -102,18 +101,19 @@ function InputHelper()
 			}
 		}
 
-		if (isKeyPressedMappedToAnAction == true)
+		if (isKeyPressedMappedToAnAction)
 		{
 			this.hasActionBeenPerformedThisTick = true;
 		}
 	}
 
-	InputHelper.prototype.initialize = function()
+	initialize()
 	{
-		document.body.onkeydown = this.handleEventKeyDown.bind(this);
+		document.body.onkeydown =
+			this.handleEventKeyDown.bind(this);
 	}
 
-	InputHelper.prototype.updateForTimerTick = function()
+	updateForTimerTick()
 	{
 		this.hasActionBeenPerformedThisTick = false;
 	}

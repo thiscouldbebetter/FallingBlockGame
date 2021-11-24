@@ -1,18 +1,29 @@
 
-function Level(fallPeriodOfBlocksInTicksPerCell, map)
-{	
-	this.fallPeriodOfBlocksInTicksPerCell = fallPeriodOfBlocksInTicksPerCell;
-	this.map = map;
-
-	this.ticksSoFar = 0;
-	this.blockCurrent = null;
-	this.isTerminated = false;
-
-	this.blockPosInCellsPrev = new Coords(0, 0);
-}
-
+class Level
 {
-	Level.prototype.blockGenerate = function()
+	constructor
+	(
+		fallPeriodOfBlocksInTicksPerCellBase,
+		rowsToCompletePerSpeedIncrease,
+		map
+	)
+	{
+		this.fallPeriodOfBlocksInTicksPerCellBase =
+			fallPeriodOfBlocksInTicksPerCellBase;
+		this.rowsToCompletePerSpeedIncrease =
+			rowsToCompletePerSpeedIncrease;
+		this.map = map;
+
+		this.ticksSoFar = 0;
+		this.blockCurrent = null;
+		this.isTerminated = false;
+
+		this.blockPosInCellsPrev = new Coords(0, 0);
+
+		this.rowGroupsCompletedByDepth = [ 0, 0, 0, 0, 0 ];
+	}
+
+	blockGenerate()
 	{
 		var blockDefns = Globals.Instance.world.blockDefns;
 
@@ -37,13 +48,16 @@ function Level(fallPeriodOfBlocksInTicksPerCell, map)
 		return returnValue;
 	}
 
-	Level.prototype.clearFullRows = function()
+	clearFullRows()
 	{
 		var mapSizeInCells = this.map.sizeInCells;
 
 		var cellPos = new Coords(0, 0);
 
 		var y = mapSizeInCells.y - 1;
+
+		var numberOfLinesCompletedSoFar = 0;
+
 		while (y >= 0)
 		{
 			cellPos.y = y;
@@ -54,7 +68,7 @@ function Level(fallPeriodOfBlocksInTicksPerCell, map)
 			{
 				cellPos.x = x;
 
-				var isCellOccupied = this.map.isCellAtPosOccupied	
+				var isCellOccupied = this.map.isCellAtPosOccupied
 				(
 					cellPos
 				);
@@ -66,35 +80,69 @@ function Level(fallPeriodOfBlocksInTicksPerCell, map)
 				}
 			}
 
-			if (areAllCellsInRowOccupied == true)
+			if (areAllCellsInRowOccupied)
 			{
 				this.map.cellsAsStrings.splice(y, 1);
 				this.map.cellsAsStrings.splice
 				(
 					0, 0, this.map.cellRowBlankAsString
 				);
+				numberOfLinesCompletedSoFar++;
 			}
 			else
 			{
 				y--;
 			}
 		}
+
+		if (numberOfLinesCompletedSoFar > 0)
+		{
+			this.rowGroupsCompletedByDepth[0] +=
+				numberOfLinesCompletedSoFar;
+			this.rowGroupsCompletedByDepth[numberOfLinesCompletedSoFar]++;
+		}
 	}
 
-	Level.prototype.initialize = function()
+	fallPeriodOfBlocksInTicksPerCell()
+	{
+		var rowsCompletedSoFar = this.rowsCompletedSoFar();
+		var numberOfSpeedIncreases = Math.floor
+		(
+			rowsCompletedSoFar / this.rowsToCompletePerSpeedIncrease
+		);
+		var fallPeriodDivisor = 1 + numberOfSpeedIncreases / 2;
+		var fallPeriod = Math.round
+		(
+			this.fallPeriodOfBlocksInTicksPerCellBase
+			/ fallPeriodDivisor
+		);
+		if (fallPeriod < 1)
+		{
+			fallPeriod = 1;
+		}
+
+		return fallPeriod;
+	}
+
+	initialize()
 	{
 		this.blockCurrent = this.blockGenerate();
 	}
 
-	Level.prototype.updateForTimerTick = function()
-	{	
+	rowsCompletedSoFar()
+	{
+		return this.rowGroupsCompletedByDepth[0];
+	}
+
+	updateForTimerTick()
+	{
 		this.ticksSoFar++;
 
-		var blockPosInCells = this.blockCurrent.posInCells;		
+		var blockPosInCells = this.blockCurrent.posInCells;
 
 		this.blockPosInCellsPrev.overwriteWith(blockPosInCells);
 
-		if (this.ticksSoFar % this.fallPeriodOfBlocksInTicksPerCell == 0)
+		if (this.ticksSoFar % this.fallPeriodOfBlocksInTicksPerCell() == 0)
 		{
 			blockPosInCells.addXY
 			(
@@ -111,24 +159,25 @@ function Level(fallPeriodOfBlocksInTicksPerCell, map)
 			this.map
 		);
 
-		if (hasBlockHitBottom == true)
+		if (hasBlockHitBottom)
 		{
 			hasBlockComeToRest = true;
 		}
 		else
 		{
-			var doesBlockCollideWithOthers = this.blockCurrent.collidesWithMapCellsOccupied
-			(
-				this.map
-			);
+			var doesBlockCollideWithOthers =
+				this.blockCurrent.collidesWithMapCellsOccupied
+				(
+					this.map
+				);
 
-			if (doesBlockCollideWithOthers == true)
+			if (doesBlockCollideWithOthers)
 			{
 				hasBlockComeToRest = true;
 			}
 		}
 
-		if (hasBlockComeToRest == true)
+		if (hasBlockComeToRest)
 		{
 			blockPosInCells.overwriteWith
 			(
@@ -136,7 +185,7 @@ function Level(fallPeriodOfBlocksInTicksPerCell, map)
 			);
 			this.blockCurrent.cellPositionsOccupiedUpdate();
 
-			if (this.blockCurrent.collidesWithMapTop(this.map) == true)
+			if (this.blockCurrent.collidesWithMapTop(this.map) )
 			{
 				Globals.Instance.world.level = null;
 				alert("Game Over");
@@ -159,7 +208,7 @@ function Level(fallPeriodOfBlocksInTicksPerCell, map)
 		var displayHelper = Globals.Instance.displayHelper;
 
 		displayHelper.drawBackground();
-		
+
 		displayHelper.drawMap
 		(
 			this.map
@@ -169,5 +218,16 @@ function Level(fallPeriodOfBlocksInTicksPerCell, map)
 		(
 			this.blockCurrent
 		);
+
+		var statsAsText =
+			"Rows: "
+			+ this.rowGroupsCompletedByDepth[0]
+			+ " (1x" + this.rowGroupsCompletedByDepth[1]
+			+ " 2x" + this.rowGroupsCompletedByDepth[2]
+			+ " 3x" + this.rowGroupsCompletedByDepth[3]
+			+ " 4x" + this.rowGroupsCompletedByDepth[4]
+			+ ")";
+
+		displayHelper.drawText(statsAsText, 10, new Coords(2, 0));
 	}
 }

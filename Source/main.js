@@ -1,10 +1,12 @@
+
 function main()
 {
-	var blockDefnsAll = BlockDefn.Instances._All;
+	var blockDefnsAll = BlockDefn.Instances()._All;
 
 	var level0 = new Level
 	(
 		5, // fallPeriodOfBlocksInTicksPerCell
+		16, // rowsToCompletePerSpeedIncrease
 		new Map(new Coords(10, 20))
 	);
 

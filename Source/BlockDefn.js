@@ -1,14 +1,25 @@
 
-function BlockDefn(name, offsets)
+class BlockDefn
 {
-	this.name = name;	
-	this.offsets = offsets;
+	constructor(name, offsets)
+	{
+		this.name = name;
+		this.offsets = offsets;
+	}
+
+	static Instances()
+	{
+		if (BlockDefn._instances == null)
+		{
+			BlockDefn._instances = new BlockDefn_Instances();
+		}
+		return BlockDefn._instances;
+	}
 }
 
+class BlockDefn_Instances
 {
-	BlockDefn.Instances = new BlockDefn_Instances();
-
-	function BlockDefn_Instances()
+	constructor()
 	{
 		this.Aye = new BlockDefn("Aye", [new Coords(-1, 0), new Coords(0, 0), new Coords(1, 0), new Coords(2, 0)]);
 		this.Ell = new BlockDefn("Ell", [new Coords(-1, 1), new Coords(-1, 0), new Coords(0, 0), new Coords(1, 0)]);
@@ -27,6 +38,6 @@ function BlockDefn(name, offsets)
 			this.Square,
 			this.Tee,
 			this.Zee,
-		];	
+		];
 	}
 }
