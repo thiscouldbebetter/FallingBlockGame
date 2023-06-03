@@ -1,9 +1,13 @@
 
 class Map
 {
-	constructor(sizeInCells)
+	constructor(sizeInCells, sizeInPixels)
 	{
 		this.sizeInCells = sizeInCells;
+		this.sizeInPixels = sizeInPixels;
+
+		this.cellSizeInPixels = this.sizeInPixels.clone().divide(this.sizeInCells);
+
 		this.sizeInCellsMinusOnes = this.sizeInCells.clone().subtract
 		(
 			new Coords(1, 1)
@@ -22,6 +26,7 @@ class Map
 		{
 			this.cellsAsStrings.push(this.cellRowBlankAsString);
 		}
+
 	}
 
 	isCellAtPosOccupied(cellPos)

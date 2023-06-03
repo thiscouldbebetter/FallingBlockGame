@@ -59,6 +59,14 @@ class Coords
 		return this;
 	}
 
+	multiplyScalar(scalar)
+	{
+		this.x *= scalar;
+		this.y *= scalar;
+
+		return this;
+	}
+
 	orient(forward)
 	{
 		this.overwriteWithXY

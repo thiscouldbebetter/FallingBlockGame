@@ -1,22 +1,46 @@
 
 class World
 {
-	constructor(blockDefns, level)
+	constructor(blockDefns, places)
 	{
 		this.blockDefns = blockDefns;
-		this.level = level;
+		this.places = places;
+
+		this.placeCurrentIndex = null;
+		this.placeNextIndex = 0;
 	}
 
-	initialize()
+	initialize(universe)
 	{
-		this.level.initialize();
+		// todo
 	}
 
-	updateForTimerTick()
+	placeCurrent()
 	{
-		if (this.level != null)
+		return (this.placeCurrentIndex == null ? null : this.places[this.placeCurrentIndex]);
+	}
+
+	updateForTimerTick(universe)
+	{
+		if (this.placeNextIndex != null)
 		{
-			this.level.updateForTimerTick();
+			var placeCurrent = this.placeCurrent();
+			if (placeCurrent != null)
+			{
+				placeCurrent.finalize(universe, this);
+			}
+
+			this.placeCurrentIndex = this.placeNextIndex;
+			this.placeNextIndex = null;
+
+			var placeCurrent = this.placeCurrent();
+			placeCurrent.initialize(universe, this);
+		}
+
+		var placeCurrent = this.placeCurrent();
+		if (placeCurrent != null)
+		{
+			placeCurrent.updateForTimerTick(universe, this);
 		}
 	}
 }

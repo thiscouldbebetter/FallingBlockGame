@@ -23,9 +23,9 @@ class Level
 		this.rowGroupsCompletedByDepth = [ 0, 0, 0, 0, 0 ];
 	}
 
-	blockGenerate()
+	blockGenerate(universe, world)
 	{
-		var blockDefns = Globals.Instance.world.blockDefns;
+		var blockDefns = world.blockDefns;
 
 		var blockDefnIndex = Math.floor
 		(
@@ -124,9 +124,9 @@ class Level
 		return fallPeriod;
 	}
 
-	initialize()
+	initialize(universe, world)
 	{
-		this.blockCurrent = this.blockGenerate();
+		this.blockCurrent = this.blockGenerate(universe, world);
 	}
 
 	rowsCompletedSoFar()
@@ -134,7 +134,16 @@ class Level
 		return this.rowGroupsCompletedByDepth[0];
 	}
 
-	updateForTimerTick()
+	updateForTimerTick(universe, world)
+	{
+		this.updateForTimerTick_Blocks(universe, world);
+
+		this.drawToDisplay(universe.display);
+
+		this.updateForTimerTick_UserInput(universe, world);
+	}
+
+	updateForTimerTick_Blocks(universe, world)
 	{
 		this.ticksSoFar++;
 
@@ -187,7 +196,7 @@ class Level
 
 			if (this.blockCurrent.collidesWithMapTop(this.map) )
 			{
-				Globals.Instance.world.level = null;
+				world.level = null;
 				alert("Game Over");
 			}
 			else
@@ -202,20 +211,122 @@ class Level
 
 		if (this.blockCurrent == null)
 		{
-			this.blockCurrent = this.blockGenerate();
+			this.blockCurrent = this.blockGenerate(universe, world);
 		}
+	}
 
-		var displayHelper = Globals.Instance.displayHelper;
+	updateForTimerTick_UserInput(universe, world)
+	{
+		var level = this;
+		var blockCurrent = level.blockCurrent;
 
-		displayHelper.drawBackground();
+		if (blockCurrent != null)
+		{
+			var map = level.map;
+			var blockPosInCells = blockCurrent.posInCells;
+			var blockPosPrev = blockPosInCells.clone();
+			var blockOrientationPrev = blockCurrent.orientation.clone();
 
-		displayHelper.drawMap
+			var inputHelper = universe.inputHelper;
+			var keysToProcess = inputHelper.keysPressed;
+
+			for (var i = 0; i < keysToProcess.length; i++)
+			{
+				var key = keysToProcess[i];
+
+				inputHelper.keyRelease(key);
+
+				if (key == "ArrowLeft")
+				{
+					blockPosInCells.addXY
+					(
+						-1, 0
+					);
+
+					blockCurrent.cellPositionsOccupiedUpdate();
+
+					if 
+					(
+						blockCurrent.collidesWithMapSides(map)
+						|| blockCurrent.collidesWithMapCellsOccupied(map)
+					)
+					{
+						blockPosInCells.overwriteWith(blockPosPrev);
+					}
+				}
+				else if (key == "ArrowRight")
+				{
+					blockPosInCells.addXY
+					(
+						1, 0
+					);
+
+					blockCurrent.cellPositionsOccupiedUpdate();
+
+					if 
+					(
+						blockCurrent.collidesWithMapSides(map)
+						|| blockCurrent.collidesWithMapCellsOccupied(map)
+					)
+					{
+						blockPosInCells.overwriteWith(blockPosPrev);
+					}
+				}
+				else if (key == "ArrowDown")
+				{
+					blockPosInCells.addXY
+					(
+						0, 1
+					);
+
+					blockCurrent.cellPositionsOccupiedUpdate();
+
+					if 
+					(
+						blockCurrent.collidesWithMapBottom(map)
+						|| blockCurrent.collidesWithMapCellsOccupied(map)
+					)
+					{
+						blockPosInCells.overwriteWith(blockPosPrev);
+					}
+				}
+				else if (key == "ArrowUp")
+				{
+					blockCurrent.orientation.right();
+
+					blockCurrent.cellPositionsOccupiedUpdate();
+
+					if 
+					(
+						blockCurrent.collidesWithMapBottom(map)
+						|| blockCurrent.collidesWithMapSides(map)
+						|| blockCurrent.collidesWithMapCellsOccupied(map)
+					)
+					{
+						blockCurrent.orientation.overwriteWith
+						(
+							blockOrientationPrev
+						);
+					}
+				}
+			}
+		}
+	}
+
+	// Drawing.
+
+	drawToDisplay(display)
+	{
+		display.drawBackground();
+
+		display.drawMap
 		(
 			this.map
 		);
 
-		displayHelper.drawBlock
+		display.drawBlock
 		(
+			this.map.cellSizeInPixels,
 			this.blockCurrent
 		);
 
@@ -228,6 +339,7 @@ class Level
 			+ " 4x" + this.rowGroupsCompletedByDepth[4]
 			+ ")";
 
-		displayHelper.drawText(statsAsText, 10, new Coords(2, 0));
+		display.drawText(statsAsText, 10, new Coords(2, 0));
 	}
+
 }
