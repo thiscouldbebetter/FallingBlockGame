@@ -196,8 +196,8 @@ class Level
 
 			if (this.blockCurrent.collidesWithMapTop(this.map) )
 			{
-				world.level = null;
-				alert("Game Over");
+				document.open(); // Clear it.
+				document.write("You lose!");
 			}
 			else
 			{
